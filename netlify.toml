@@ -1,19 +1,14 @@
-# Netlify Build Configuration
 [build]
   base = "frontend"
   command = "npm run build"
-  publish = "frontend/dist"
+  publish = "dist"
 
-# API proxy to Render backend
-# Replace YOUR_RENDER_BACKEND_URL with your actual Render URL
-# Example: https://chatsphere-api.onrender.com
 [[redirects]]
   from = "/api/*"
   to = "https://chat-sphere-ux34.onrender.com/api/:splat"
   status = 200
   force = true
 
-# SPA fallback for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
