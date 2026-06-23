@@ -34,4 +34,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
 
+if (process.env.FRONTEND_URL) {
+	app.get("*", (req, res) => {
+		res.redirect(process.env.FRONTEND_URL);
+	});
+}
+
 server.listen(PORT, () => console.log(`Server started at http://localhost:${PORT}`));
