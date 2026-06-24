@@ -58,10 +58,10 @@ const CreatePost = () => {
     };
 
     const handleCreatePost = async () => {
-        if (!postText && !imgUrl) {
-            showToast("Error", "Post content or image is required", "error");
-            return;
-        }
+    if (!imgUrl && !postText.trim()) {
+        showToast("Error", "Please add an image or caption", "error");
+        return;
+    }
         setLoading(true);
         try {
             const res = await fetch("/api/posts/create", {
@@ -98,20 +98,24 @@ const CreatePost = () => {
         }
     };
 
-    return (
-        <>
-            <Button
-                position={"fixed"}
-                bottom={10}
-                right={10}
-                leftIcon={<AddIcon />}
-                bg={useColorModeValue("gray.300", "gray.dark")}
-                onClick={onOpen}
-                size={{ base: "sm", sm: "md" }}
-                zIndex={99}
-            >
-                Post
-            </Button>
+   const isAllowedPage = location.pathname === "/" || location.pathname === `/${user?.username}`;
+
+if (!isAllowedPage) return null;
+
+return (
+    <>
+        <Button
+            position={"fixed"}
+            bottom={10}
+            right={10}
+            leftIcon={<AddIcon />}
+            bg={useColorModeValue("gray.300", "gray.dark")}
+            onClick={onOpen}
+            size={{ base: "sm", sm: "md" }}
+            zIndex={99}
+        >
+            Post
+        </Button>
             
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
