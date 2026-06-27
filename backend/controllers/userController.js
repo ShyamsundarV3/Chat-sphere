@@ -9,7 +9,7 @@ const getUserProfile = async (req, res) => {
     const { query } = req.params;
     try {
         let user;
-        
+
         const isObjectId = /^[a-fA-F0-9]{24}$/.test(query);
 
         if (isObjectId) {
@@ -230,4 +230,27 @@ const searchUsers = async (req, res) => {
     }
 };
 
-export { signupUser, loginUser, logoutUser, followUnFollowUser, updateUser, getUserProfile, getSuggestedUsers, searchUsers };
+
+const getUsersByIds = async (req, res) => {
+    try {
+        const { ids } = req.body;
+
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ error: "ids must be a non-empty array" });
+        }
+        if (ids.length > 500) {
+            return res.status(400).json({ error: "Cannot request more than 500 users at once" });
+        }
+
+        const users = await User.find({ _id: { $in: ids } })
+            .select("-password -updatedAt")
+            .lean();
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log("Error in getUsersByIds: ", error.message);
+    }
+};
+
+export { signupUser, loginUser, logoutUser, followUnFollowUser, updateUser, getUserProfile, getSuggestedUsers, searchUsers, getUsersByIds };
