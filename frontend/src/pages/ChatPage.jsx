@@ -239,7 +239,7 @@ const getConversations = async () => {
           </Flex> 
         )}
         
-        {selectedConversation._userId && <MessageContainer />}
+        {selectedConversation.userId && <MessageContainer />}
       </Flex>
     </Box>
   );
