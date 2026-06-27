@@ -57,6 +57,7 @@ export default function SignupCard() {
 
         localStorage.setItem("user-chatsphere", JSON.stringify(data));
         setUser(data);
+        showToast("Success", "Account created successfully!", "success");
     } catch (error) {
         showToast("Error", error.message || error, "error");
     } finally {

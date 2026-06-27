@@ -6,22 +6,25 @@ import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
 
 const getUserProfile = async (req, res) => {
-     const { query } = req.params;
-     try {
+    const { query } = req.params;
+    try {
         let user;
+        
+        const isObjectId = /^[a-fA-F0-9]{24}$/.test(query);
 
-        if (mongoose.Types.ObjectId.isValid(query)) {
+        if (isObjectId) {
             user = await User.findOne({ _id: query }).select("-password").select("-updatedAt");
         } else {
             user = await User.findOne({ username: query }).select("-password").select("-updatedAt");
         }
+
         if (!user) return res.status(400).json({ error: "User not found" });
 
         res.status(200).json(user);
-     } catch (error) {
+    } catch (error) {
         res.status(500).json({ error: error.message });
         console.log("Error in getting user profile: ", error.message);
-     }
+    }
 };
 
 const signupUser = async (req, res) => {
@@ -67,7 +70,9 @@ const signupUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ username });
+        const user = await User.findOne({
+            $or: [{ username }, { email: username }]
+        });
         const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
          
         if (!user || !isPasswordCorrect) return res.status(400).json({ error: "Invalid username or password" }); 
