@@ -100,16 +100,20 @@ const ChatPage = () => {
   }, [socket, setConversations, setMessages, currentUser._id]);
 
   useEffect(() => {
-    const getConversations = async () => {
-      setLoadingConversations(true);
-      try {
-        const res = await fetch("/api/messages/conversations");
-        const data = await res.json();
-        if (data.error) {
-          showToast("Error", data.error, "error");
-          return;
-        }
-        setConversations(data);
+    const preSelectedSnapshot = selectedConversation.userId ? { ...selectedConversation } : null;
+
+const getConversations = async () => {
+  setLoadingConversations(true);
+  try {
+    const res = await fetch("/api/messages/conversations");
+    const data = await res.json();
+    if (data.error) {
+      showToast("Error", data.error, "error");
+      return;
+    }
+    setConversations(data);
+    if (preSelectedSnapshot) setSelectedConversation(preSelectedSnapshot);
+  
       } catch (error) {
         showToast("Error", error.message, "error");
       } finally {
@@ -226,7 +230,7 @@ const ChatPage = () => {
               ))}
         </Flex>
         
-        {!selectedConversation._id && (
+        {!selectedConversation.userId && (
           <Flex flex={70} borderRadius={"md"} p={2} flexDir={"column"} alignItems={"center"} justifyContent={"center"} height={"400px"}>
               <GiConversation size={100} />
               <Text fontSize={20}>
