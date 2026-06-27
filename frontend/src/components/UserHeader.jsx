@@ -59,7 +59,7 @@ const FollowListModal = ({ isOpen, onClose, followerIds, followingIds, userName 
       const ids = [...new Set(
     tabIndex === 0 ? followerIds : followingIds
 )];
-      const users = await fetchUsersByIds(ids, controller.signal);
+      
       const users = await fetchUsersByIds(ids, controller.signal);
 
 if (!Array.isArray(users)) {
